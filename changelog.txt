@@ -1,0 +1,757 @@
+- 2.0 FREE includes debugger (exp. Mar. 31, 2020)
+
+   NEW: Editor Setting - Word Highlight checkbox
+
+   FIX: Updated URLs for looking up & searching keywords & non-keywords (like .Q.dpft or .z.pw) in kx.com wiki on F1
+
+   FIX: Some more exotic cases are handled by Namespaces tree queries (compositions of dynamic loads and such).
+
+   BUGFIX: Double-click on function calls in Debugger dialog once again switches contexts instead of querying the stack item to the main window
+
+
+- 1.9 FREE includes debugger (exp. Sep. 30, 2019)
+
+   NEW: Memory/files linkage in Remote files inventory... menu item in Q and root namespace node pop-up menus (showing tree of loaded files, filterable by filename and content substrings). 
+        Also, Defined in, Original name properties in properties pane are double-clickable (leading to corresponding lambdas in a tree), as well as File name and File line 
+        (Opening remote files inventory on this file/line). For now you've got to double-click on left-side property names, not on property values. 
+        Also added function nodes under files, namespace tree Show containing file context menu item, etc. Let me know if there are any problems.
+
+   NEW: Switched query wrapping from text to lambda. Sample/default lambda getting you z sublist value x if it isn't greater than y MBs.
+        You can easily tweak params to 0W for no sublist cutting or negative for last records/elements rather than 1st, change max number of MB you want to IPC back or rewrite the whole thing to your liking.
+        NB: There's no indication whether table or list has been cut, so you could want some obvious sublist count, probably. 
+            
+        Holding SHIFT while executing line (Ctrl+Enter) or selection (Ctrl+E) of code is now defeating query wrapping. 
+        Handy if you generally want to cut output to N rows or not to return results more than NN MB (and achieving it by query wrapping), but sometimes want to query stuff as is.
+
+   NEW: In addition to non-keyword Help URL, keyword Help URL is now configurable too. By default the are set to kx's wiki and new site respectively, so you'll easily reach help on .Q.dd, etc. pressing F1
+
+   NEW: Updated errors and .z stuff to available on a latest q version. Added short descriptions (in properties panel) for .Q & .h entities
+
+   NEW: Integrated with new version of e.dll 
+
+   FIX: Much better default values in settings (promoted on 1st run and used for fresh qPad profiles)
+
+   FIX: Refactored & streamlined connection code, hopefully to be more predictable on switching between TLS/non-TLS etc.
+
+BUGFIX: Fixed crash on attempt to send empty output grid to a grid view
+
+
+- 1.8 FREE includes debugger (exp. Mar. 31, 2019)
+
+    NEW: Padlock button on the toolbar - Pilot version supporting TLS/OpenSSL connection via new e.dll that KX released recently and OpenSSL. 
+         Please see instructions regarding setting up OpenSSL environment on code.kx.com 
+
+    NEW: Q Setting "use 1TB IPC capability" (as far as I understood, fall-back to 2Gb will be transparent, if it isn't with some older versions of q you can always turn it off here).
+
+    NEW: Reset to Defaults button on Fonts & Colors dialog will reset color schema to hard-coded default
+
+    NEW: "Display numbers in locale-spec. format" checkbox in Grid group-box section of settings. It'll give you grouping by thousands, but not without it's drawbacks - fixed number of decimals, even if they are zeros. 
+         N.B. Actually, you can tairol the format to your liking in windows settings as I'm using user locale format, not system. 
+              It'll be in Additional settings of date, currency and number format in regional settings.
+
+    NEW: "Unresolved dependencies" root node in the Namespace tree. While there were already ! on functions with (possibly) unresolved references, and such references were listed as Not Found in properties of those functions. 
+         I somehow missed the notion to implement the view from the other side... til now :) So, here's a node under which I collected them (fully named, sorted) - you can see where they are referenced from in properties, navigate by double clicking on function names in properties (like with defined nodes) and use Show callers... context menu. WIP.
+         N.B. Appearance in this list doesn't necessarily means there will be a runtime error attributed to this unresolved global. Or, as in case with error in fby - you won't be able to tell the difference (as you can see one of the unresolved globals found is .q.length - fby contains 'length construction which strictly speaking not raising 'length signal, but looking for value in length variable to raise it as a signal :) during which process absence of length var raising a 'length error indistinguishable from result author sought at this point). It's just one of the many tools I tried to provide in qPad to make your debugging and troubleshooting just a bit easier and faster. I assume as references whatever referenced global list contains in the lambda as well as in any of the labdas this lambda contains (and so on recursively), also I'm on a lookout for atom symbols in those lambdas which in 85% of cases turns out to be globals referenced by symbols. So, all in all I'm trying to err on a side of caution. One of the possible usages of this little toy could be if you spot let's say 'v error somewhere in your logs. Searching for it source files on disk or memory by using qPad's Variables Inventory is pretty pointless.
+              But type v in a source pane and press Ctrl+D (to jump to v in a Namespace tree) and if there is an unresolved global by this name - you'll instantly see functions it's referenced from in properties pane,
+
+    NEW: Plot result... table context menu item, so now it should be possible to have several graph dialogs simultaneously. 
+         (Remember, they disappear if you get another result into grid you've plotted it from)
+
+    NEW: Save and load to/from binaries from grid controls. (Output and Grid view) Stuff loaded this way is not getting added to Result history. If you want it to be - load from Result sub-tab of output pane.
+         N.B. For now underlying object is saved, just like sent to instance. I will add the choice between underlying and object actually shown in the grid when I will figure out non-clumsy/annoying UI for it.
+
+    NEW: Selection is retained after sorting (content-wise, not grid index-wise). Focused item should be visible after sorting
+
+    NEW: Proper result properties dialog instead of message-box.
+
+    NEW: As table context menu was getting very long, grouped Copy and Send items into sub-menus. 
+         N.B. If you miss copy cell, remember, now you can double-click on a cell with a simple value to copy it to clipboard. 
+
+    NEW: Show underlying object context menu item - if drilled down into cells, you can get back to underlying (topmost) object using this in Grid View.
+
+    NEW: Added choice for what kind of # column to add. # col is just a row number in grid regardless of sorting, as before. i col (shown as #i) is a row number in result received, 
+         will shuffle along with sorting
+
+    NEW: "Saving and loading" of results. Right-click context menu in Result sub-tab of the Output window (will be adding to another table-showing elements maybe to some of the namespace tree nodes), 
+         To make it more interesting, whatever you save, you are able to load into q instance (3.x) without qpad ;-) just like with the files you'd get using save or `:filename set functions in q. 
+         (Not that I encourage you to do it ;-) proceed at your own peril and only with your own dev instances)
+         N.B. While qPad should be able to load any of the files that it saved, it doesn't mean that it'll load any binary file you saved using q instance :) 
+              (although it might be able to load some of the binaries). 
+              There are some tricky cases I'm not going to handle, not to mention enumerated columns I'd have no way of knowing how to resolve without corresponding sym file.
+
+    FIX: Mapped drives are back in File view
+
+    FIX: Format roundtrip column on a Results history pane in line with properties dialog, status bar, etc.
+
+    FIX: Dramatically increased speed of the initial rendering of keyed tables (intend to make a difference on loading heavy tables with a lot of columns). 
+         Ex.: 129 columns keyed table 1.1Mil rows taking <12sec to render instead of >10min before. 
+         (still pretty sluggish selecting rows and scrolling around, but at least some of the careless queries shouldn't hang your qPad for a loooong time) 
+
+    FIX: Further speed optimization of Debugger GUI
+
+    BUGFIX: Floating crash during graph plotting is fixed
+
+    BUGFIX: Hopefully fixed something that bugged me for quite a while - elusive events hanging or crashing while changing source tab having "switch connections on pane activation", 
+            especially in conjunction with custom auth dll used and cached token expired (hence initiating transparent retry after failed connect).
+
+    BUGFIX: Sorting table where nothing is selected no more jumping to the new position of the 1st row of the original result
+
+    BUGFIX: More logical behavior with stable sorting while some of sortings along the way were in desc order.
+            N.B.: The way it supposed to work - first click on header asc sort, second - desc, 3rd - reset to the original order. 
+                  Just to be clear, click on a column header that's already sorted in desc order will reset order to the original. 
+                  So if you did it and want to sort by several columns - time to start sorting again from the top :). 
+                  Otherwise, however you sort by whatever column it shouldn't change current order of rows having equal values in the column you're sorting by. 
+
+
+- 1.7.1 FREE includes debugger (exp. Sept. 30, 2018)
+
+    NEW: Header-clicking column sorting should be stable now. 
+         (Ex.: That is if you want to see table sorted by source, then sym (inside each source), then time inside each sym from each source - you need to click on time, then sym, then source headers.)
+         ;-) or you could always query `source`sym`time xasc table, but stabilizing qsort of an index-map turned out to be easy and cost almost nothing.
+
+    NEW: Show type and count in Grid View caption similar to output window sub-Tab (Ex.: Grid View (Table:35000))
+
+    NEW: Switched to MSVS 2017, new build toolset and latest c.obj from kx
+
+    NEW: New menu command File->Open home directory... Does just that - opens home dir in explorer (where logs, servers.cfg, auth_ dlls etc.). 
+         Since now it's possible to tune it up from command line, should be useful.
+
+    NEW: Double-click on table cell now does one of two things - if it's K object - tries to show it in Grid view (will clear it if it isn't list/dictionary/table) 
+         otherwise copies its content to clipboard. 
+
+    NEW: Slightly changed log format from one to two liners, so it can be pasted to qPad source window and made some sense there.
+
+    FIX: Further improvements of header-click sorting, guids should be sortable, strings (as well as boolean and byte arrays in cells) should be sorted faster.
+         (Order-wise while sorting - NaNs are "less" than -INFs, which is less than anything else and INF as more than anything) 
+
+    FIX: While I'm still gathering strength of my will to try and switch to the incredible new dbg.q by Maestro Kozyrev, 
+         there's some quick and dirty hack that can make my UI for the old one MUCH faster stepping through code. 
+         I decided to query strings for all variables and non-functional items on a stack larger than 4242 bytes. 
+         That changed representation a bit, but you can still query any variable from any context or any non-function entry from the stack to the main output by double-clicking on it.
+
+    FIX: Fixed global Ctrl+J accelerator to autosize columns in grid view as well
+
+    BUGFIX: Fixed crash on Send to... from Stash dialog 
+
+    BUGFIX: Reloading file after change outside of qPad doesn't disappear scrollbar anymore.
+
+
+- 1.7 FREE includes debugger (exp. Sept. 30, 2018)
+
+    NEW: New table-showing elements. Grid View pane. Results Stash dialog. New results history pane is auto-managed history, number of results to keep is in Q->settings (3 by default). 
+         Double-click on result to show in Grid View pane. Other stuff available in context menu. Let me know if there are any glitches.
+
+         NB: Couple of words on memory consumption. All grids are virtual, so even if you have one result in 3 grids, overhead would be 3 arrays of longs for sort re-mapping, 
+             otherwise grids will be displaying parts of the same K struct. But of course, even though results aren't copied or cloned anywhere, 
+             your qPad memory footprint can be much more than before (especially while keeping many huge tables in Results History). 
+             While result listed in Results History or any grid is displaying any part of the result you've got from the instance, whole such result is being kept in memory by qPad 
+             and will be released after you'll remove it from results history and all grids.
+
+    NEW: New Grid View pane - you can send results here from stash dialog, from output table pane, history pane, drill down to cells 
+         (if you work with lists/dictionaries/tables containing lists/dictionaries/tables in cells and want to look at them closely in separate grid). So, some new context menu items for table grid. 
+
+    NEW: Pilot implementation of Results History/Buffer dialog where you can send results from output table. To manage memory footprint remove results from buffer.
+
+    NEW: New command Show in file view in right-click on source tab context menu (find and focus on file opened in the tab).
+
+    NEW: Show name of the server(s) in the tree associated with the source tab on tab tooltip along with server symbol and full file path (when "switch connection on pane activation" checked in Editor tab settings).
+
+    NEW: Added graph.cfg with background & default cycling color set. File is in plain text, so you can either edit it to your liking or save/delete it via new "Def. Colors..." button on Graph dialog. In this case only content of the property grid is saved.
+         (ex.: to save background and 41 default cycling distinct color set you've got to plot table with 41 int cols).
+
+    NEW: Command-line parameter --homedir:PATH Supply for qpad to use alternative storage directory for Servers.cfg, Watches.cfg, looking for auth_*.dlls in, writing query logs to, etc.
+         If not supplied, directory qpad.exe file is launched from is used (as in previous versions), if --homedir:.\ is supplied, current dir (Start in: value from windows shortcut) will be used.
+         Windows UNC Paths should be supported, paths with spaces - aren't (workaround would be to use --homedir:.\ and quoted path with spaces in "Start in" field of shortcut or short 8dot3 name: dir /X can help figuring those out)
+         You must have read/write permissions to the supplied dir.
+         N.B. It's not advised to set the same network path for several users, as servers.cfg can be overwritten by any user and can contain individual user/password information.
+
+    NEW: All non-trivial dialogs (Function and Variables Inventories, Dependencies/Callers, Results History, Quick Watch, Graph, Debugger, etc.) should be resize-able and maximize-able.
+
+    NEW: output table context menu - "Show Results Source" shows where those results came from (server, date and time in GMT and query text)... 
+    
+    NEW: output table context menu - "Send to instance..." It should pass the exact result the table is rendered from, so you'll get back (or further to another instance) table/keyed table or dictionary, 
+         even list, depending on your settings - whether to show dictionaries and lists in grid view.
+    
+    NEW: output table context menu -  output result context menu "Send Result to instance..." to send back in any last result, regardless of what's in the grid
+         This will work to forward stuff to another instance too if you'll change the connection between receiving and sending results.
+
+    FIX: File View includes hidden folders and shown&focused upon execution of Show in file view command.
+
+    BUGFIX: Weird effect with tracking file changes outside of editor (when timezone is changed on the fly, maybe DST changed, pretty annoying when disconnecting/reconnecting to RDH in another region) fixed.
+
+
+- 1.5 FREE includes debugger (exp. Sept. 30, 2017)
+
+    NEW: Async mode was made more user-friendly thanks to great guys from AquaQ - (http://www.aquaq.co.uk/q/parallel-datab ... -torq-kdb/)
+         You still need to use commandline parameter "--async" to have access to Async mode, but general use Send-back lambda is already hard-coded as default and available for customization on Settings->Editor tab page. (No need to fiddle with registry manually anymore)
+
+    FIX: Auto-scroll of debug source so that the current line is visible
+
+    FIX: Improvement of token-caching logic for other auth methods (token received from dll for the same parameter string is getting cached and used until auth error is encountered, not just on successful logins)
+
+    FIX: Several Debugger fixes - both engine & GUI (ex.: double-clicking on variable names being in on of recursive caller contexts queries the right one to main qPad window, not the shallowest like it used to). 
+
+    FIX: Roundtrip info fixed for Async mode
+
+    BUGFIX: Minor typos here and there fixed.
+
+    BUGFIX: Fixed glitch with auto-complete drop-box disappearing when delayed syntax highlighting is enabled - now flushes all delayed highlighting before dropping hint-list. 
+
+
+
+- 1.4 FREE includes debugger (exp. Mar. 31, 2017)
+
+   NEW: Option in Q Settings->Grid groupbox. Stop cell rendering after NNNN chars. 0 means act as before. 
+        This can help in cases when too deep/complicated/long lists in table cells are taking forever to show/scroll around (as in wrong "by" -> hanging qpad). 
+        If you are familiar with the problem, set it to 150 (or 1500 or whatever convenient) and let me know if it helps. Values cut in this manner will have trailing "...". 
+        For now it affects export to CSV, excel and copy to clipboard as well.
+
+   NEW: Option in Settings->Editor Tab. When Alt help URL is defined and word under cursor isn't a keyword, get identifier instead of a word to pass to alt URL (Ex.: .api.func instead of api or func earlier)
+
+   NEW: On a Graph dialog it's now possible to use different Charting styles for different columns - button Adv... next to style listbox allow to choose styles individually.
+
+   FIX: Unicode saving was changed somewhat. Now 1st option is to save UTF-8 without BOM - should be loadable in q, in qPad, but not in standard windows editors which are relying on BOM for UTF-8 recognition. 
+
+   BUGFIX: Some minor polishing in Debugger UI.
+
+- 1.3 FREE includes debugger (exp. Sep. 30, 2016)
+
+   NEW: New setting in Editor tab - custom URL for getting help on non-keywords (Can be used to display API documentation when pressing F1 with a function name under cursor - it gets appended to URL)
+
+   FIX: Fixed grid representation of list->table dicts (in line with table->list ones, which were fixed a long time ago :))
+
+   FIX: Experimental fix for stuttering while working with files opened from slow remote locations (checks for outside changes to files should be switched off)
+
+   FIX: No longer fails to query table information for instances with - (and other nasty chars) in namespace names
+
+   BUGFIX: Bugfix for names service query (Namespace tree) for cases with partitioned tables located in non-root namespaces
+
+   BUGFIX: Hopefully bugfix for undo/redo stacks that sometimes appears while working with delayed highlighting
+
+
+- 1.1 FREE includes debugger (exp. Sep. 30, 2015)
+
+   NEW: Graph dialog: Background color can be changed
+  
+   NEW: Double-click on local variables in debugger queries them to main result output (Tip: if you look at console pane, you can copy accessors to experiment with locals from any context depth in main window)
+
+   FIX: Namespace refresh should work with non-blocking instances (as it used to), also if async requests are denied on instance, set "Service queries timeout" to 0 sec - that will mean leave timeout alone and won't use 0 handle execution :). 
+   
+   FIX: Updated errors & descriptions list according to code.kx wiki. 
+   
+   FIX: File monitor made optional - OFF by default. Turn on in Editor tab of the Settings if desired.
+
+   FIX: Drag&Drop to source pane works like it should, not creating OLE link to file in richedit. Alas, that lead to drag&drop of text inside of source pane is disabled as well, but I don't think anybody will miss it :)
+
+   FIX: Most recent version of debugger included.
+
+   BUGFIX: No more random crashes while invoking Variables Inventory on instances with enumerations. 
+
+   BUGFIX: Debug stack visualization now shows whole stack (was off in cases when stack deeper than 10 elements)
+
+
+- 1.0 FREE includes debugger (exp. Mar. 31, 2015)
+
+   NEW: Although there's no chance to get types 20-96 (enumerated and nested) out of the instance via IPC unresolved to 11 or 0 type respectively, there's a place in qpad I should've shown them, but somehow never did until now - in the Namespace variable node properties pane.
+
+   NEW: Eliminated White from generated array of default graph colors, as well as white baseline. Changed grid+labels from drawing over graph, to drawing before the graph. Added Copy restricted query (X only) in addition to (X&Y) that was already in the Graphing control pop-up menu.
+
+   FIX: Better 3+ compatibility: enlist instead of plist, new version of inject-able debugger (more 3.0-compatible, `instancesymbol"query" not causing problems anymore), etc.
+
+   NEW: Little improvement to the debugger dialog: While it's inconvenient to see locals in debugger window, it is now possible to query them to the main output window by double-clicking on a local name. Unlike .z.deb.a`<varname> prefix that was previously mentioned in tips & tricks post, not only context of current execution point is supported, but any context in a call stack by .z.deb.st[n][3]`<varname> prefix 
+
+   NEW: File monitor was added to detect external changes to files opened in qpad. Message box is appearing asking if you want to reload file or not.
+
+   NEW: Copy Full Name from namespace entities was added to context menu, also as a default handler for clipboard copy accelerators (Ctrl+Insert, Ctrl+C) while on a leaf of the tree. (BTW, Ctrl+D is doing the opposite for quite some time - Jumps in a Namespace to the node which name is under cursor in the source)
+
+   NEW: "Execute with nothing selected runs all" added to Editor settings, could be checked off.
+
+   NEW: Added C-syntax accessors generation for the focused node when in Physical (K) view mode of Quick Watch dialog. Assumes that query result is in K pK variable.
+
+   NEW: "Copy as Symbol list" on the output result pane context menu. What it does is treats selection as symbol list (skips till first `, then tokenizing by ` and wraps each one in double quotes and whole in `$()) Useful for getting lists with -/* etc. chars in symbols out of result window to the q-accepted syntax. I.e. you can simply copy `aa`bb-bb`c/d`rr from result pane to much more executable `$("aa";"bb-bb";"c/d";"rr") in one click (or key-press if you'll pick and assign one in Customize... dialog).
+
+   NEW: Introduced Namespace Explorer Service Query timeout setting - 60 sec by default. All 4 queries I use consequentially to build Namespace tree are obeying it (instead the one set on an instance). Fixed some problems - should work better.
+
+   FIX: Wrapped whole kx r0/r1/m9 memory management from the same-thread viewpoint in a thread dispatcher of my own doing :). (Used to leak their TLS when worker threads were ending, leaving me K object locked in virtual grid - but not anymore.) Still one-copy-original-K approach to memory usage, just much more thread-conscious I guess.
+
+   FIX: On "interrupting" the query by running another or switching to another server: Now I am abandoning threads, not terminating them. In conjunction with disconnect of the underlying connection, should be as clean a break as possible.
+
+   FIX: Changed signal result signature from !ERROR! to !SIGNAL! in watches query - so those queries being logged won't mess with alerting/monitoring utilities/systems which are parsing logs in search of ERRORs ;-)
+
+   BUGFIX: Fixed awful bug in Debugger UI that sometimes happening when partitioned table appears on a stack. Also invoking debugger while holding Shift should force it to start with preparing selected expression even if another debugging session was in progress.
+
+
+
+
+- 1.0 RC9 includes debugger (exp. Sep. 30, 2014)
+
+   NEW: Support for *es in Server tree filter box. Still substring search - so no need in leading & trailing *
+
+   NEW: Nulls are empty cells option in Grid setting (working only for typed colums, for mixed it's still 0N, 0Nz, 0ne, 0n, 0Nwhatever)
+
+   FIX: (Or should I say MFC bugfix :)) File tree view is now showing folder and file icon overlays (like in Tortoise SVN synced/non-synced/added/etc.).
+
+   FIX: Subscription testing is more tolerant to .u.sub results it can possibly get, also dialog is now handling publishing instance shutdown/restart without glitches.
+
+   FIX (while was at it): Resolve instance full name (for free-typed in quick-connect combo) regardless of filter currently applied to the server tree - affects caption, connect-combo description & critical instance recognition/coloring 
+
+   BUGFIX (by kx - c.obj): receiving new 3.0 binary primitive binr was crashing k() - go figure ;-). Relinking with new version of c.obj solved the crash. Also added to binary primitives on visualizing side & q keywords on syntax highlighting side of.
+
+   BUGFIX: Fixed bug in IPC Size type determination (long/int), now reporting IPC sizes > 2Gb right.(affects Properties, Find largest by IPC size and Variables inventory)
+
+
+- 1.0 RC8 includes debugger (exp. Mar. 31, 2014)
+
+   NEW: Add # column option in Setting (synthetic 0-based grid row number, not i - won't change when grid resorted by header-clicks), all rows colored as even. Table Row indicator in status bar is now also 0-based (used to be 1-based)
+
+   NEW: Setting Hide references not found in the body for hiding "indirect" dependencies (from nested lambdas that weren't found in body text). 
+        Refresh Namespaces tree after changing the option. Back-trace (used in functions) affected as well. 
+        Ex.: in .o.Cols this will hide .Q.v, .Q.pf and .Q.qp
+
+   NEW: MRU files count is adjustable now - create a MRULength (REG_DWORD) value under key HKCU\Software\ozConcept\ozQInsightPad\Custom and set it to desired count.
+
+   NEW: Q->Settings->Editor tab "Typing delay" in ms for hopefully less painful as you type highlighting. (Default delay is 0 i.e. turned off). 
+        Affects highlighting as well as undo/redo queue (consecutive typing with less than delay interval between chars considered one operation and undone/redone as such).
+
+   NEW: added .k to list of default extensions for open file dialog filter.
+
+   NEW: New Graph control Context menu item "Copy Constrained Query" enabled when zoomed-in - basically takes query graph was plotted from and applies within restriction by X-col to be in X-range and |ed for any of selected cols to be in Y range.
+        Resulting query is placed into clipboard. Made verbose on purpose (of easier fiddling with). There are couple of pitfalls though:
+          1. Won't be nice and executable based on original query with comments and/or multiline; (That one is fixable at expense of result's readability)
+          2. Won't work as expected with keyed tables having same column names in key and value parts (but then again, what readable select would? ;-)) 
+
+   NEW: Graph style selector. For now its just basic Line, Scatter plot and Bars (more vertical lines actually, straight or hanging) and Line with actual points circled. 
+
+   NEW: "All" check-box in Graph dialog (to check & uncheck all available columns in one-two clicks)
+
+   NEW: Graph control: Implementation of gridlines and simple labeling
+        timestamps are ugly looking (too long), but should be spot-on. 
+        Month type is a bit off for a moment. 
+
+   FIX: Fixed Initial Namespaces gathering query to no longer 'type on namespaces containing invalid variable names.
+   FIX: Minor change to how Refresh Namespaces behaves - after refresh tries to jumps to the entity selected last before refresh.
+   FIX: Redid some parts of namespace gathering queries (shorter, still cryptic but hopefully more elegant - less k, more q) while was at it made dependencies tracking and cross-referencing engine much more compatible with locked functions.
+   FIX: Resolution/zooming made better in Graph control by switching to long double arithmetic everywhere
+   FIX: Text marking dependency in caller's text (Dependencies Explorer) restricted to "whole word" match (used to be just substring)
+
+   BUGFIX: Slow init of grids with lots (>100) of columns (lock-unlock window is back, though more precisely localized).
+   BUGFIX: Graph control sometimes was crashing after a while of left and right clicking. Fixed what was able to reproduce and padded in suspicious places.
+   BUGFIX: Switching to another server while query is still running (and confirming) had an unexpectedly mocking effect (connected and disconnected immediately)
+   BUGFIX: <Exception> while rendering `real$()
+   BUGFIX: stopped pre-pending by-sym references with default (as in \d at a time of definition) lambda namespaces. (wrong in this case, obviously)
+
+- 1.0 RC7 includes debugger (exp. Sept. 30, 2013)
+
+After experimenting with newest c.dll and some user feedback, I've decided to switch to it next release of qpad, also statically linking with c.obj now - so no need for c.dll at all.
+
+!!! Please, let me know if it doesn't work with your version of q (version .z.K & build date .z.k would be nice), I'll consider leaving older c.dll-based builds in pipeline !!!!
+
+
+    NEW: Functions and Variables inventories Ctrl+Alt+F/V
+    NEW: Eagle-eye cross-reference engine (digging into nested lambdas and spotting references by symbol names
+    NEW: guid type support
+    NEW: color schema import&export
+    FIX: Switch connection on pane activation made easier to use
+    FIX: Debugger is now kdb+ 3.0-ready
+    BUGFIX: Lots of bugfixes in debugger back and front ends
+
+- 1.0 RC6 hotfixed on 2012.11.27
+    FIX: Lookup in namespaces changed to find non-standard .q entities w/o prefixes
+
+- 1.0 RC6 hotfixed on 2012.11.13
+
+    FIX: Debugger bugfixes & improvements:
+ - cleanup of list control inits
+ - variable list now obeys setting - maximum rows in text results for tables
+
+
+- 1.0 RC6 hotfixed on 2012.11.12
+
+    BUGFIX: Output Result tab is using colors from source background/default (as functions can be syntax highlighted there)
+
+    FIX: Close button on Debugger dialog is now closing debugger connection and debug session is started anew with auto-prepare expression after that. Helps to keep things more consistent with switching instances for debugging.
+
+- 1.0 RC6 hotfixed on 2012.11.09
+
+    BUGFIX: Default color from Fonts&Colors settings tab is used for text if highlighting is turned off (used to be black - doesn't look good if background is black)
+
+- 1.0 RC6 hotfixed on 2012.11.06
+
+    BUGFIX: Visualization engine misrepresented negative time, minute, second. Fixed to be in line with q console.
+
+    BUGFIX: Access denied was displayed in info box on Server node edit by default.
+
+- 1.0 RC6 hotfixed on 2012.10.31
+
+    BUGFIX: Debugger used to crash whenever encountered general list with more than 3 elements on the stack
+
+- 1.0 RC6 includes debugger prototype (exp. Mar. 31, 2013)
+
+    NEW: Custom query wrapping (Settings->Editor)
+
+    FIX: Smarter way to paste functions from intelli-sense lookup (with or w/o parameters depending on if [ pressed/encountered after name in current context)
+
+    FIX: New default Console keep 10 queries (used to be 0 - infinite, lead to query processing time degrading with each query)
+
+    NEW: Quick-connect combo box now shows name of the instance on the right in connected state (full path from the tree). Disconnected/Not Current otherwise.
+If symbol is mentioned in the tree more than once, only 1st occurrence shown. All names are shown in main caption & in a combo tool-tip.
+Reminder - to make combo wider, right-click on a toolbar->customize, then with customize dialog shown, click on a combo and drag-size by right edge.
+State will be saved on exit & restored on next start.
+
+    NEW: Added "Lookup in Namespaces" menu item to editor context menu (default shortcut is Ctrl+D). Very simple, using selected text as a full entity name, tries to look it up in a namespace explorer tree, jumps to it (and displays properties) if found. 
+
+    NEW: Added kdb+ 3.0 postfix style check to Settings. Does just that when checked - posfixes integers with i, not longs with j in output window.
+
+    NEW: Text selection for Lookup... and Add Watch optional - qpad will try to figure out identifier cursor's at and use it if there's nothing selected.
+
+    NEW: Quick View dialog. Sporting switchable Physical (C) and Logical structured tree+text variable inspector.
+Handle with care 
+- No "sane counts" checks/clipping
+- In Logical view expression is appended with index(es) corresponding to tree node selected
+- No querying happens while exploring the tree (only on dialog open and on pressing Requery button)
+- Logical view for keyed tables is nothing to write home about at the moment (basically kt[key kt]~value kt), but tries to be at least syntactically consistent (index-wise)
+- Can crash and burn (if used carelessly)
+
+   NEW: Graceful handling of c.dll trying to terminate qpad when running out of memory. Instead of qpad silently disappearing on you, there should be non-modal message box telling you what happened, presenting options and what's more important - giving you the opportunity to save your files before closing and restarting qpad.
+
+   NEW: Due to popular demand client-side query logging is added as an option in Q->Settings->Editor
+Files queries_YYYY.MM.DD.log are created in the same directory qpad is in the following format:
+<localtime> on <instance_symbol> from <source tab caption> q) <query>
+
+   NEW: Debugger front-end prototype (inject-able debugger created by Maestro Andrey Kozyrev).
+1. Connect to YOUR OWN DEVELOPER's q instance.
+2. Select function call or expression you want to debug/step-trace.
+3. Press Ctrl+Alt+D
+First steps on Debugger dialog are Prepare and Step Into. After that it's pretty straightforward.
+In function source window - put cursor on the line you want to set/clear breakpoint and press F9.
+If you're receiving error during normal execution - press F5 and see where (and why) it happens.
+Variables grid contains locals & parameters
+You can use Watches pane from QPad main window (it's detachable) - they will be updated after each step.
+
+   NEW: Ability to tie source pane to the q instance. 
+- optional, turn it on in Q->Settings->Editor tab
+- not persisted between sessions
+- setting symbol for a pane 1) when you're connecting to symbol being on a pane 2) first time switching to a pane or opening a file being connected somewhere
+- switching connection when you're switched to a pane with different symbol (doesn't add it to history)
+- shouldn't connect anywhere if you're disconnected (manually or for any other reason)
+
+   NEW: Background coloring for critical instances. Q->Settings->Editor tab.
+Substrings are searched for in symbol itself as well as in the Server tree path. Ex.:
+PROD;333 
+will match all instances listed under PROD folder (or wherever there's *PROD* in the path) and all ports or hostnames containing 333 and vice versa.
+For now you can choose background color, some more settings/enterprise safety features are coming.
+Should come in handy with all the new ways of confusing yourself as to where we are right now  Back/Forward, Change on Pane change, etc.
+
+   NEW: Option to choose Line breaks format when saving sources (Windows/Unix). Q->Settings->Editor tab
+
+   NEW: Mark identifier/selected text (Ctrl+M). Background color can be set in Settings->Fonts and Colors->Syntax section
+Marking same text, another text and empty string - clears current mark. If nothing is selected, tries to get identifier under cursor.
+
+   NEW: Dependency explorer - replaced text graphs for dependancies/callers (shown on the Right Click->Show... in namespace explorer).
+- old-style text graph is available on pressing Call graph as text
+- Show in Namespaces will jump to selected entity in Namespace Explorer + Properties
+
+   FIX: Server tree filter box is now waits for you to stop typing for a second, then applies new filter 
+
+   BUGFIX: prior keyword should be recognized, typos fixed here and there
+
+   BUGFIX: Error message if qpad was unable to save chart picture (Ex.: dir permission).
+
+   BUGFIX: Server view - Keyboard operation on server nodes(Enter, Del), ability to create folders inside of empty folders
+
+   BUGFIX: Error message if qpad was unable to save chart picture (Ex.: dir permission).
+
+   BUGFIX: Error message if qpad was unable to save chart picture (Ex.: dir permission).
+
+   BUGFIX: Charting wasn't allowed in some cases it should have been
+
+   BUGFIX: Trimming leading & trailing spaces in connection combo
+
+   BUGFIX: Crash with invoking charting dialog after popup menu was used (related to handling popup menu owned by non-modal dialog)
+
+- 1.0 RC5 Hotfixed (exp. Oct. 31, 2012)
+
+    NEW: added z.c and .z.zd constants
+
+    FIX: Disabled Context menu for Subscription grid, don't need it there at the moment and was behaving erratically anyway
+
+- 1.0 RC5 (exp. Oct. 31, 2012)
+
+    NEW: Graph dialog is now non-modal
+
+    NEW: Syntax Highlighting can be turned off (per source pane).
+         Brackets matching/coloring is not affected by this (neither are lambdas in result pane)
+
+    NEW: Editor tab in settings - moved Auto-complete on dot and tab size there, added Line Wrapping & Syntax Highlighting default/startup switches.
+
+    NEW: Set currently connected symbol (if any) as default in Server view->Add Server dialog
+
+    NEW: Server connection history (back/forward)
+
+    NEW: Icons & toolbar buttons for Undo, Redo, Execute Line/Selection, Syntax HL & Line Wrapping and Settings. Export to excel menu item added. 
+         Quick-connect combo wide enough by default.
+
+    NEW: x&y 0 baselines in white are added to graph
+
+    NEW: Default credentials are added to Settings. Used to connect when default username is not empty and supplied/stored in symbol username is.
+         Also is an answer to everybody who didn't like username/password showing anywhere on the surface of the interface.
+
+    NEW: Q->Test Subscription is added. Can subscribe & show updates (keyed & non-keyed tables as of now) from u.q based pub instances. 
+    Use your head before using interface - raw universe-wide subscription to industrial strength market data ticker plants could be as fatal for them as it will be useless for you.
+
+    BUGFIX: Changing server while query is running was leading to retrying same query on new server.
+
+    BUGFIX: Copy to clipboard operation now follows visual order (after interactively dragging columns around in the grid)
+
+    BUGFIX: Sorting fixed in grid for cols with neg 0n(z) values (to be handled same as 0n - less than anything else, incl. -0w)
+
+    BUGFIX: Gracefully reporting unexpected service query result (during Namespace refresh), could be result of fiddling with .z.pg too much
+
+    BUGFIX: Autocomplete lookup is now case-aware (exact case context match takes precedence - e.g. focused suggestion .z.W when you typing .z.W, not .z.w)
+
+    BUGFIX: Newly added server node wasn't bold if it's currently connected
+
+    BUGFIX: Connect to the same server from add server node dialog (connect after saving checked) resulted in disconnect
+
+    BUGFIX: Export to excel was incapable of exporting unicode content
+
+    BUGFIX: do is now recognized by syntax highlighting as a keyword
+
+    FIX: Discovered interesting and obscure, but reproducible broken K objects by c.dll during chained service queries (Namespace explorer refresh). 
+         Worked around this by splitting connections in chain.
+
+    FIX: Switched base URL for F1 from https://anonymous:anonymous@code.kx.com to http://code.kx.com
+         Should work just as well (after kx's site update) and end paranoid messages in FireFox.
+
+
+- 1.0 RC4 (exp. 2012.05.31)
+
+    NEW: Option to turn off Grid Clipboard copy in HTML format (as requested by Andrey M)
+
+    BUGFIX: Proper handling of both 0Nz cases in the engine (same as done previously for e & f, second one being neg 0N(n))
+
+    FIX: Eliminated nasty hack for slash escaping in projection parameters, made option for Doubling "\" in strings (console-style) instead.
+
+    FIX: Handling bad (ones including -/ and other symbol-terminating chars) function/vars names gracefully in Namespace explorer.
+
+
+- 1.0 RC3 (exp. 2012.01.31)
+
+    NEW: Bolding keywords while highlighting is made optional (as requested by Mo ) 
+(Q->Settings->Fonts & Colors->Keywords are Bold check-box)
+
+    NEW: Added autosize all columns (for currently visible content) in grid popup menu, Ctrl+J shortcut. (as requested by Sunny)
+
+    NEW: Added auto-reconnect (1 retry) in case of invalid connection handle (q instance went down and then back up since last query). (as requested by Gerry)
+
+    FIX: Added containment of some unexpected Richedit functionality which was causing some confusion (esp. vertical tabs):
+Blocked Ctrl+125RJ+= and Shift+Enter. Added replacing of \v (AKA vertical tab) with space to the query pre-processing, just in case... q doesn't care for it much ('char) 
+
+    FIX: Fixed symbols w/o hostname - e.g. `::61 in quick-connect combo and connection dialog (as pointed out by tochkam)
+
+    BUGFIX: Engine corrected in regard to lists with applied attributes (with 0&1 count) (as pointed out by Xi )
+
+    BUGFIX: Excel export should now handle all possible NaNs and Infinities (thanks to grandmaster Andrey K for spotting the bug )
+
+
+- 1.0 RC2 (exp. 2011.10.31)
+    NEW: Switched to new version of c.dll. qpad is no longer hanging indefinitely trying to connect to a busy instance.
+    Timeout is global (could be changed in connect dialog). 5 sec by default, 0 - old behavior.
+
+    NEW: Async querying (to avoid confusion, need to specify --async parameter to enable menu item)
+    (To always see what's current mode of operation, Customize... drag Q->Async menu command to toolbar) 
+
+    NEW: Cross-reference engine improvements:
+    - show (and include in autocomplete dropdown) parameters to call projections with (incl. nested)
+    - Red ! left of the function icon for functions containing unresolved referenced globals (in Namespace tree & autocomplete lookup)
+    (not necessarily means that function is broken - could be conditional use, assign or use of a hidden user-defined .z entity, still nice to know)
+    - If broken tables are present (meta fails), query doesn't fail anymore
+    (Such tables will have Error -> error text (ex. './2009.01.01/t2: The system cannot find the path specified.) in properties, instead of Fields grid section.)
+
+    NEW: errors in watches window are passed back and shown
+
+    NEW: excel button in toolbar - Saves to temp xml from grid & execs excel with it.
+
+    NEW: Editor improvements:
+    - Tab is now converted to spaces (q->setting, default is 4) 
+    - (Shift+)Ctrl+Right/Left in source window is now aware of `. Jumping/selecting through symbol lists like `a`b`c is now much easier. 
+    - If selection is multiline - (shift+)tab (un)Indents it
+    - fixes to paste and undo/redo stack
+    - Shift+Ctrl+] with cursor on a bracket will select text in brackets currently highlighted (Seemed logical addition to Ctrl+] - Jump to other bracket)
+    - fixed trailing CR when pasting single lines
+    - keywords are now in bold
+
+    FIX: Limit of table rows syntactically re-presentable in results/console raised to 1000 
+    (don't go over 100 if you don't really need it, will impact performance, especially if you haven't set console history count/result length yet to keep it in check and always fast )
+
+    FIX: escaping for "," in cells during csv export 
+
+    FIX: "Results received" date-time format in Grid->Open in browser made less ambiguous
+
+    FIX: Better 0n handling in charting: not counted during auto-range boundary calculation. Shown as gap in a line. 
+
+    FIX: gracefully avoiding stackfault visualizing K objects nested deeper than 1340
+
+    FIX: datetime visualization closer to console in case of fractured millisecond
+
+    BUGFIX: representation of float nulls & enlist 1 char
+
+    BUGFIX: Dependencies (Show & Get source w/all) bug fixed (shouldn't miss by namespace now )
+
+    BUGFIX: in html and xml generation (<> escaping in cells' contents)
+
+    BUGFIX: Cleanup/debug of clipboard operations
+
+
+- 1.0 RC (exp. 2011.07.31)
+  NEW: option "Invoke auto-complete on . (dot) typed" added to settings
+
+  NEW:  .z namespace (with Handlers/Constants branches) added manually to the namespace tree/intellisence lookup/cross-referencing engine
+
+  NEW: Description field is added for .z entities, also shown in callers/dependencies instead of (var) and in Referenced Globals section where applicable.
+
+  FIX: fixed bug with .z & q ver 2.5 (variables service query failed with 'nyi for .z.p/P/n/N)
+
+  FIX: OEM/Nonscalable Fonts were removed from available selection in Fonts & Colors, to prevent glitches and confusion.
+
+  FIX: geo,unshow,wtf,valence,mf,cmf,mmed,cmavg,cmmed,help are no longer recognized by syntax highlighting as keywords (which they really aren't)
+
+  FIX: cursor hover coordinates boxes in graph dialog now have different border and hide when mouse leave graph control (to avoid confusion, especially with saved graphs)
+
+  FIX: added diagnostic message in case watches.cfg/servers.cfg read-only or you lack permissions to the dir qinsightpad is run from (instead of just blowing up on startup)
+
+  FIX: Revisited Projections properties - lambda parameters "projected to" fixed, full body (including parameters it's projected to) is shown
+
+  BUGFIX: UTF-8 BOM was added in front of any file saved. (Should only happen when Unicode chars present, after warning/confirmation)
+
+  BUGFIX: fixed cosmetic glitch with resizing mdi client area down while not rightmost tab is active
+
+  BUGFIX: Slightly adjusted qpad behavoiur in Window 7 taskbar - hover menu will show instances and not individual tabs (to avoid confusion and one nasty glitch on activation)
+
+  BUGFIX: fixed writing of extra #0 char in the end of query in "Grid->Open in browser" html creation (showed in Firefox)
+
+  BUGFIX: charting of grids with less than 2 rows is now disabled (to prevent confusion with 1 row charting & blowing up on attempt to chart empty grid)
+
+
+- 0.99 (exp. 2011.05.20)
+  NEW: Charts (Focus being on visualizing dataset pattern/figuring out where anomalies are while querying).
+        - X/Ys selection/colors, auto-range, X&Y min/max and mouse hover values.
+        - Zoom on selected area (hold left mouse button to select rect). 
+        - Since no components were used, huge datasets are easily chartable, just be patient with sets south of 1Mil points (~12sec per 1Mil points per field + some for sorting along new/changed X).
+        - Right-click Context menu:
+	   - Zoom Undo (one step back)
+           - Copy Values - copies current mouse position (mapped back to underlying values) to clipboard as:
+               X-field name (type): value (formatted as corresponding q type of x-field)
+               Y: value (double)
+           - Center Here (also double-click) pan to new center, not available when not zoomed (auto-range)
+        - Save As... should save snap of the dialog (picture alone wouldn't make much sense atm w/o boundaries and legend) 
+
+  NEW: Server Tree Filter - new edit-box in server view toolbar. 
+         As you type there, tree will be rebuilt with only leaf nodes that contain substring typed: meaning name and server (all of the branches are expanded in this case). 
+         Currently connected server is left in the tree regardless of filter.
+	 Refresh button clears filter (deleting all text from it does too).
+
+  NEW:  Show full name of currently connected server (Folder1\Folder2\...\Name) in the title bar. If symbol mentioned in server tree more than once, names are separated by " | ". Also shown as quick-connect combo tooltip.
+  
+  NEW:  Auto-complete entity names using Namespace tree.
+         - Lookup is based on Namespace tree: Uncheck "hide reserved namespaces" if you want to include built-in q functions, .Q etc 
+         (no .z yet, sorry - this one will probably be manual addition to the tree at some point)
+         - If you'll like to use auto-complete lookup, enabling namespace auto-refresh in settings probably will be a good idea.
+
+  FIX:  Improved "function" part of namespace engine - more precise type recongition, compositions' bodies, etc.
+
+
+  BUGFIX: Querying namespaces on instances with external functions (dynamic load)
+
+  BUGFIX: Error 'limit on variables query on namespaces with memory(-mapped) tables > 2G bytes on IPC-side (during getting fall-back IPC size) 
+
+  BUGFIX: Context-menu item "show callers" wasn't disabled on namespaces(incl. nested) - crashed as a result.
+
+  BUGFIX: When Properties pane was (auto)hidden, it wasn't updated on namespace tree node change.
+
+
+- 0.98 (exp. 2011.04.01)
+  FIXES/ENHANCEMENTS:
+  - keyboard "enter" in namespace tree acts as double-click (immediate query) for leafs and expand/collapse for namespaces/folders
+  - keyboard "delete" in namespace tree acts as delete from namespace (with usual confirmation)
+  - keyboard "enter" or double-click on value column in watch grid to do query to output (watch context menu->Query to output) 
+  - keyboard "insert" in watches pane - add watch
+  - turned off "auto-extending selection to words" when using mouse to select text in source & result windows.
+  - turned on "selection bar" in source windows 
+  (narrow left field - click there selects line (part if wrapped), double click - whole wrapped line).
+
+  BUGFIX: console now is always scrolled to to the end (worked around glitch with setting selection/scrolling when tab isn't active)
+
+  BUGFIX: .csv extension automatically appended to filename (Export All/Selected to CSV...)
+
+  BUGFIX: several glitches with deleting/coloring watches
+
+  BUGFIX: highlighting improperly substrings starting with j
+
+  BUGFIX: Engine getting confused about dicts (table->list) being just tables, showing them in grid w/o range. Although Result/Console text is ok. 
+	(table->list is shown as keyed table if option to show dictionaries in grid checked - Dict:## instead of Table:## on grid tab is a usual hint that this option is used)
+
+  NEW: remember application look chosen
+
+  NEW: distinct between manual and click queries (don't refresh watches/namespaces on click-queries)
+
+  NEW: "physical partitioning" is recognized as a distinct field type
+
+  NEW: Additional font settings (Console & Grid)
+
+  NEW: Mark modified source tabs with *
+
+  NEW: Recognize result as function/projection body: Auto-switch to syntax-highlighted Result tab.
+
+  NEW: Launch QPad command in server tree
+
+  NEW: Commandline parameters
+	--server:<serversymbol> --profile:<registrybranch> to force-connect to server & store window layout/open tabs, etc. separately for different servers it's launched for in this manner.
+
+  NEW: Unicode support
+	Be aware:Saving actual scripts (to be loaded in q instance) in UTF-8 from qpad is a BAD idea right now. 
+	q doesn't like leading BOM and windows (notepad, etc.) doesn't like UTF-8 files without it. I'll leave the issue hanging for a while, hope it's not a pressing one ATM.
+	Hence prompt appearing every time you're about to save file with Unicode chars.
+
+  NEW: Grid improvements
+	- Right click->Copy cell (<val>...) copies single cell, never copies column name to clipboard
+	- Right click->Copy column (<name>...) copies just this column from all selected rows (obeys copy col names option)
+	(to copy whole column, Select all grid (Ctrl+A) before right-clicking on desired column)
+
+  NEW: HTML Clipboard format added - used transparently, clients who can paste html will paste it (preserves coloring/formatting/grid font face).
+
+  NEW: Right click->Open in browser command added - saves whole grid to temp html and opens it up. Heading table contains server/query/GMT date time results were received.
+	(with huge datasets - proceed at your own risk)
+
+- 0.97.2 (exp. 2011.03.15)
+  BUGFIX: Crash in some cases during namespace refresh, introduced in 0.97
+	    Debugged & Cleaned up whole link between tree/properties:
+		Properties cleared on refresh start & on selection of namespace/folder
+		Double-click on namespace tree item queries entity from server
+
+- 0.97 (exp. 2011.03.15)
+  NEW: Properties: Back/Forward/Query button tooltips are shown
+
+  NEW: Properties: Description area shown 
+       (available double-clicks to jump to related entities mentioned there)
+
+  NEW: Properties: Query (down-arrow) button in Properties pane.
+       (Queries currently show entity from server & shows in output)
+
+  NEW: Option Grid "Show dictionaries in grid view" 
+       (as 2 column table - key, value)
+
+  NEW: Option Grid "Show lists (except strings) in grid view" 
+       (as 2 column table - index, value)
+
+  NEW: Option Output "Limit each result in console to ## K chars" 
+       (helps managing footprint/responsiveness.
+	Only affects console tab: uncut last result is always in Result tab)
+
+  NEW: Option Namespaces "Flatten nested hierarchy" 
+       (uncheck to group nested namespaces under parent one)
+
+  BUGFIX: Fixed crash with dicts in table cells.
+
+- 0.96 (exp. 2011.03.15)
+  First public beta
